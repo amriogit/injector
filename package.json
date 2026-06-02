@@ -1,5 +1,5 @@
 {
-  "name": "@amriogit/ts-injector",
+  "name": "@amriogit/injector",
   "version": "0.1.0",
   "private": true,
   "type": "module",
