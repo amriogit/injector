@@ -4,13 +4,13 @@
   "private": true,
   "type": "module",
   "description": "轻量 DI 容器 — Injector, BaseService, InjectionToken。零外部依赖，支持 SSR，Vue 集成。",
-  "main": "./src/injector.ts",
-  "types": "./src/injector.ts",
+  "main": "./dist/injector.js",
+  "types": "./dist/injector.d.ts",
   "exports": {
-    ".": "./src/injector.ts",
-    "./vue": "./src/injector-vue.ts"
+    ".": "./dist/injector.js",
+    "./vue": "./dist/injector-vue.js"
   },
-  "files": ["src"],
+  "files": ["dist", "src"],
   "peerDependencies": {
     "vue": "^3.4.0"
   },
@@ -20,10 +20,12 @@
     }
   },
   "scripts": {
+    "build": "tsc",
     "test": "vitest run",
     "test:watch": "vitest"
   },
   "devDependencies": {
+    "typescript": "^5.8.3",
     "vitest": "^3.2.4",
     "vue": "^3.5.34"
   },
