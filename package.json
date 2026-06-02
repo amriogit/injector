@@ -1,0 +1,23 @@
+{
+  "name": "@amriogit/ts-injector",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "轻量 DI 容器 — Injector, BaseService, InjectionToken。零外部依赖，支持 SSR，Vue 集成。",
+  "main": "./src/injector.ts",
+  "types": "./src/injector.ts",
+  "exports": {
+    ".": "./src/injector.ts",
+    "./vue": "./src/injector-vue.ts"
+  },
+  "files": ["src"],
+  "peerDependencies": {
+    "vue": "^3.4.0"
+  },
+  "peerDependenciesMeta": {
+    "vue": {
+      "optional": true
+    }
+  },
+  "license": "MIT"
+}
