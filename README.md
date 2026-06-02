@@ -40,7 +40,7 @@ const injector = new Injector()
 injector.provide(Logger, MockLogger)
 
 // 获取实例（自动实例化 + 单例）
-const users = injector.inject(UserService)
+const userService = injector.inject(UserService)
 ```
 
 ### Vue 3 集成
@@ -50,10 +50,12 @@ import { createApp } from 'vue'
 import { ServicePlugin, useInject, useProvide } from '@amriogit/injector/vue'
 
 // 安装插件
-createApp(App).use(ServicePlugin).mount('#app')
+createApp(App)
+  .use(ServicePlugin)
+  .mount('#app')
 
 // 组件中注入 Service
-const userSvc = useInject(UserService)
+const userService = useInject(UserService)
 
 // 为子树覆写实现
 useProvide(UserService, MockUserService)
