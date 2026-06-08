@@ -19,6 +19,14 @@ class DependentService extends BaseService {
   simple = this.$inject(SimpleService)
 }
 
+class ServiceWithOnDestroy extends BaseService {
+  destroyed = false
+
+  onDestroy() {
+    this.destroyed = true
+  }
+}
+
 const STRING_TOKEN = new InjectionToken<string>('VUE_STRING_TOKEN')
 
 // ---------------------------------------------------------------------------
@@ -152,5 +160,21 @@ describe('useProvide 搭配 ServicePlugin（通过 runWithContext）', () => {
       const svc = useInject(SimpleService)
       expect(svc.value).toBe('mock')
     })
+  })
+})
+
+describe('ServicePlugin — unmount 触发 onDestroy', () => {
+  it('app.unmount 时已注入的 Service 触发 onDestroy', () => {
+    const app = createApp({})
+    app.use(ServicePlugin)
+
+    let service: ServiceWithOnDestroy
+    app.runWithContext(() => {
+      service = useInject(ServiceWithOnDestroy)
+    })
+
+    expect(service.destroyed).toBe(false)
+    app.unmount()
+    expect(service.destroyed).toBe(true)
   })
 })

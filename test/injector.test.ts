@@ -42,6 +42,27 @@ class PlainClass {
   greet = () => 'plain'
 }
 
+class ServiceWithOnDestroy extends BaseService {
+  destroyed = false
+
+  onDestroy() {
+    this.destroyed = true
+  }
+}
+
+class ServiceWithBothHooks extends BaseService {
+  initOrder = 0
+  destroyed = false
+
+  onInit() {
+    this.initOrder = 1
+  }
+
+  onDestroy() {
+    this.destroyed = true
+  }
+}
+
 // ---------------------------------------------------------------------------
 // InjectionToken 定义
 // ---------------------------------------------------------------------------
@@ -323,6 +344,80 @@ describe('Injector', () => {
       const i1 = new Injector()
       const i2 = new Injector()
       expect(i1.inject(CACHE_TOKEN)).not.toBe(i2.inject(CACHE_TOKEN))
+    })
+  })
+
+  describe('onDestroy() 生命周期', () => {
+    it('injector.destroy() 调用 onDestroy', () => {
+      const svc = injector.inject(ServiceWithOnDestroy)
+      expect(svc.destroyed).toBe(false)
+      injector.destroy(ServiceWithOnDestroy)
+      expect(svc.destroyed).toBe(true)
+    })
+
+    it('未定义 onDestroy 时不会报错', () => {
+      const svc = injector.inject(SimpleService)
+      expect(() => injector.destroy(SimpleService)).not.toThrow()
+    })
+
+    it('onDestroy 在 onInit 之后独立触发', () => {
+      const svc = injector.inject(ServiceWithBothHooks)
+      expect(svc.initOrder).toBe(1)
+      injector.destroy(ServiceWithBothHooks)
+      expect(svc.destroyed).toBe(true)
+    })
+
+    it('destroy 后 inject 返回新实例', () => {
+      const a = injector.inject(ServiceWithOnDestroy)
+      injector.destroy(ServiceWithOnDestroy)
+      const b = injector.inject(ServiceWithOnDestroy)
+      expect(b).not.toBe(a)
+      expect(b.destroyed).toBe(false)
+    })
+
+    it('destroy 只影响指定 token', () => {
+      const a = injector.inject(ServiceWithOnDestroy)
+      const b = injector.inject(SimpleService)
+      injector.destroy(ServiceWithOnDestroy)
+      expect(a.destroyed).toBe(true)
+      expect(injector.inject(SimpleService)).toBe(b)
+    })
+
+    it('destroy 未 inject 过的 token 是空操作', () => {
+      expect(() => injector.destroy(ServiceWithOnDestroy)).not.toThrow()
+    })
+
+    it('destroy 后再次 inject 再 destroy 正常工作', () => {
+      const a = injector.inject(ServiceWithOnDestroy)
+      injector.destroy(ServiceWithOnDestroy)
+      const b = injector.inject(ServiceWithOnDestroy)
+      expect(b).not.toBe(a)
+      expect(b.destroyed).toBe(false)
+      injector.destroy(ServiceWithOnDestroy)
+      expect(b.destroyed).toBe(true)
+    })
+  })
+
+  describe('reset() — 触发 onDestroy', () => {
+    it('reset 调用所有缓存实例的 onDestroy', () => {
+      const a = injector.inject(ServiceWithOnDestroy)
+      const b = injector.inject(ServiceWithBothHooks)
+      injector.reset()
+      expect(a.destroyed).toBe(true)
+      expect(b.destroyed).toBe(true)
+    })
+
+    it('reset 后 inject 重新创建实例', () => {
+      const a = injector.inject(ServiceWithOnDestroy)
+      injector.reset()
+      const b = injector.inject(ServiceWithOnDestroy)
+      expect(b).not.toBe(a)
+      expect(b.destroyed).toBe(false)
+    })
+
+    it('reset 对只有 InjectionToken 值的 injector 安全', () => {
+      injector.provide(STRING_TOKEN, 'keep')
+      expect(() => injector.reset()).not.toThrow()
     })
   })
 })

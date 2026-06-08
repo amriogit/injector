@@ -113,10 +113,24 @@ export class Injector {
     return this.bindings.has(token)
   }
 
-  /** 清除所有绑定和缓存实例 */
+  /** 清除所有绑定和缓存实例（会先调用所有缓存实例的 onDestroy） */
   reset(): void {
+    for (const [, instance] of this.instances) {
+      if (typeof instance === 'object' && instance !== null && typeof (instance as any).onDestroy === 'function') {
+        ;(instance as any).onDestroy()
+      }
+    }
     this.bindings.clear()
     this.instances.clear()
+  }
+
+  /** 销毁指定 token 的缓存实例（调用 onDestroy 后移出缓存，下次 inject 重新创建） */
+  destroy<T>(token: Token<T>): void {
+    const instance = this.instances.get(token)
+    if (instance !== undefined && typeof instance === 'object' && instance !== null && typeof (instance as any).onDestroy === 'function') {
+      ;(instance as any).onDestroy()
+    }
+    this.instances.delete(token)
   }
 }
 
@@ -155,4 +169,5 @@ export abstract class BaseService {
    * 不要在构造函数中做初始化逻辑，应使用 onInit()。
    */
   onInit?(): void
+  onDestroy?(): void
 }

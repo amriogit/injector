@@ -5,7 +5,7 @@
 ## 安装
 
 ```bash
-npm install github:amriogit/injector#main
+npm install @amriogit/injector
 ```
 
 ## 使用

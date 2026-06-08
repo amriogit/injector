@@ -1,9 +1,18 @@
 {
   "name": "@amriogit/injector",
   "version": "0.1.0",
-  "private": true,
   "type": "module",
   "description": "轻量 DI 容器 — Injector, BaseService, InjectionToken。零外部依赖，支持 SSR，Vue 集成。",
+  "keywords": ["di", "dependency-injection", "injector", "typescript", "vue", "ssr"],
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amriogit/injector.git"
+  },
+  "bugs": {
+    "url": "https://github.com/amriogit/injector/issues"
+  },
+  "homepage": "https://github.com/amriogit/injector#readme",
   "main": "./dist/injector.js",
   "types": "./dist/injector.d.ts",
   "exports": {
@@ -22,7 +31,8 @@
   "scripts": {
     "build": "tsc",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "prepublishOnly": "npm test && npm run build"
   },
   "devDependencies": {
     "typescript": "^5.8.3",
