@@ -1,5 +1,5 @@
 {
-  "name": "@amriogit/injector",
+  "name": "@amrio/injector",
   "version": "0.1.0",
   "type": "module",
   "description": "轻量 DI 容器 — Injector, BaseService, InjectionToken。零外部依赖，支持 SSR，Vue 集成。",
