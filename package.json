@@ -1,6 +1,6 @@
 {
   "name": "@amriogit/injector",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "type": "module",
   "description": "轻量 DI 容器 — Injector, BaseService, InjectionToken。零外部依赖，支持 SSR，Vue 集成。",
   "keywords": [
@@ -24,7 +24,8 @@
   "types": "./dist/injector.d.ts",
   "exports": {
     ".": "./dist/injector.js",
-    "./vue": "./dist/injector-vue.js"
+    "./vue": "./dist/injector-vue.js",
+    "./vue2": "./dist/injector-vue2.js"
   },
   "files": [
     "dist"
@@ -33,7 +34,7 @@
     "access": "public"
   },
   "peerDependencies": {
-    "vue": "^3.4.0"
+    "vue": "^2.6.0 || ^3.4.0"
   },
   "peerDependenciesMeta": {
     "vue": {
@@ -47,6 +48,7 @@
     "prepublishOnly": "npm test && npm run build"
   },
   "devDependencies": {
+    "@types/vue": "^2.0.0",
     "typescript": "^5.8.3",
     "vitest": "^3.2.4",
     "vue": "^3.5.34"

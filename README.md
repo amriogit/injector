@@ -61,6 +61,37 @@ const userService = useInject(UserService)
 useProvide(UserService, MockUserService)
 ```
 
+### Vue 2 集成
+
+```ts
+import Vue from 'vue'
+import { ServicePlugin, mapInject } from '@amriogit/injector/vue2'
+
+// 安装插件
+Vue.use(ServicePlugin, {
+  setup(injector) {
+    injector.provide(API_BASE, '/api')
+  },
+})
+
+// 使用 mapInject 在 computed 中批量声明依赖
+export default {
+  computed: {
+    ...mapInject({ UserService, ChannelService }),
+  },
+  created() {
+    this.userService.fetchUsers()
+    this.channelService.load()
+  },
+}
+```
+
+#### Vue 2 注意事项
+
+1. **推荐 `mapInject`**：批量声明、自动 camelCase 转换、类型安全
+2. **无额外依赖**：不依赖 Composition API，Vue 2.0+ 通用
+3. **自动清理**：根组件销毁时自动调用 `injector.reset()`，触发所有 Service 的 `onDestroy` 钩子
+
 ## 特性
 
 - **零依赖** — 纯 TypeScript，无运行时依赖
