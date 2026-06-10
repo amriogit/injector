@@ -1,11 +1,11 @@
-# @amrio/injector
+# @amriogit/injector
 
 轻量 DI（依赖注入）容器。零外部依赖，可在 Node.js、浏览器、SSR 中运行。
 
 ## 安装
 
 ```bash
-npm install @amrio/injector
+npm install @amriogit/injector
 ```
 
 ## 使用
@@ -13,7 +13,7 @@ npm install @amrio/injector
 ### 核心 DI
 
 ```ts
-import { Injector, BaseService, InjectionToken } from '@amrio/injector'
+import { Injector, BaseService, InjectionToken } from '@amriogit/injector'
 
 // 定义 Service
 class Logger extends BaseService {
@@ -47,7 +47,7 @@ const userService = injector.inject(UserService)
 
 ```ts
 import { createApp } from 'vue'
-import { ServicePlugin, useInject, useProvide } from '@amrio/injector/vue'
+import { ServicePlugin, useInject, useProvide } from '@amriogit/injector/vue'
 
 // 安装插件
 createApp(App)
