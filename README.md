@@ -71,6 +71,87 @@ useProvide(UserService, MockUserService)
 - **生命周期** — `onInit()` 钩子在依赖就绪后调用
 - **SSR 兼容** — 无 DOM 依赖，InjectionToken 可序列化
 
+## 生命周期
+
+### onInit — 初始化
+
+`onInit()` 在 Service 构造完成、所有 `$inject()` 依赖就绪后自动调用。不要在构造函数中做初始化逻辑。
+
+```ts
+import { BaseService } from '@amriogit/injector'
+
+class TimerService extends BaseService {
+  private logger = this.$inject(LoggerService)
+  private intervalId?: ReturnType<typeof setInterval>
+
+  state = reactive({ ticks: 0 })
+
+  onInit() {
+    // 依赖已就绪，可以安全使用 this.logger
+    this.intervalId = setInterval(() => {
+      this.state.ticks++
+      this.logger.log(`tick ${this.state.ticks}`)
+    }, 1000)
+  }
+}
+```
+
+### onDestroy — 清理
+
+`onDestroy()` 在 Service 被销毁时调用，用于清理定时器、取消订阅、关闭连接等。
+
+触发方式：
+
+- **`injector.destroy(Token)`** — 销毁指定 Service 实例
+- **`injector.reset()`** — 销毁所有 Service 实例
+
+```ts
+import { BaseService, Injector, InjectionToken } from '@amriogit/injector'
+
+// WebSocket 连接示例
+class ConnectionService extends BaseService {
+  private ws?: WebSocket
+
+  connect = (url: string) => {
+    this.ws = new WebSocket(url)
+  }
+
+  onDestroy() {
+    this.ws?.close()
+    this.ws = undefined
+  }
+}
+
+// 定时器清理示例
+class PollingService extends BaseService {
+  private timer?: ReturnType<typeof setInterval>
+
+  onInit() {
+    this.timer = setInterval(() => this.poll(), 5000)
+  }
+
+  private poll = () => { /* ... */ }
+
+  onDestroy() {
+    clearInterval(this.timer)
+  }
+}
+
+const injector = new Injector()
+
+const polling = injector.inject(PollingService)
+
+// 需要替换实现时，先销毁旧实例
+injector.destroy(PollingService)
+// polling.onDestroy() 已调用，定时器已清理
+// 下次 inject(PollingService) 返回新实例
+
+// 或者一次性清理所有
+injector.reset()
+```
+
+`onDestroy` 与 `onInit` 配对使用，确保 Service 的资源生命周期可管理，防止内存泄漏。
+
 ## 测试
 
 ```bash
