@@ -86,10 +86,25 @@ export class Injector {
     has(token) {
         return this.bindings.has(token);
     }
-    /** 清除所有绑定和缓存实例 */
+    /** 清除所有绑定和缓存实例（会先调用所有缓存实例的 onDestroy） */
     reset() {
+        for (const [, instance] of this.instances) {
+            if (typeof instance === 'object' && instance !== null && typeof instance.onDestroy === 'function') {
+                ;
+                instance.onDestroy();
+            }
+        }
         this.bindings.clear();
         this.instances.clear();
+    }
+    /** 销毁指定 token 的缓存实例（调用 onDestroy 后移出缓存，下次 inject 重新创建） */
+    destroy(token) {
+        const instance = this.instances.get(token);
+        if (instance !== undefined && typeof instance === 'object' && instance !== null && typeof instance.onDestroy === 'function') {
+            ;
+            instance.onDestroy();
+        }
+        this.instances.delete(token);
     }
 }
 /**

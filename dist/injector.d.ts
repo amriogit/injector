@@ -65,8 +65,10 @@ export declare class Injector {
     private _instantiate;
     /** 检查 token 是否有绑定（不检查实例缓存） */
     has(token: RawToken): boolean;
-    /** 清除所有绑定和缓存实例 */
+    /** 清除所有绑定和缓存实例（会先调用所有缓存实例的 onDestroy） */
     reset(): void;
+    /** 销毁指定 token 的缓存实例（调用 onDestroy 后移出缓存，下次 inject 重新创建） */
+    destroy<T>(token: Token<T>): void;
 }
 /**
  * 所有可注入 Service 的基类。
@@ -95,5 +97,6 @@ export declare abstract class BaseService {
      * 不要在构造函数中做初始化逻辑，应使用 onInit()。
      */
     onInit?(): void;
+    onDestroy?(): void;
 }
 export {};

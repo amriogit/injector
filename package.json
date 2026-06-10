@@ -19,7 +19,10 @@
     ".": "./dist/injector.js",
     "./vue": "./dist/injector-vue.js"
   },
-  "files": ["dist", "src"],
+  "files": ["dist"],
+  "publishConfig": {
+    "access": "public"
+  },
   "peerDependencies": {
     "vue": "^3.4.0"
   },

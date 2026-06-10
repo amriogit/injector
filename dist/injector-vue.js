@@ -41,6 +41,9 @@ export const ServicePlugin = (app, options) => {
     options?.setup?.(injector);
     app.provide(INJECTOR_KEY, injector);
     app.config.globalProperties.$inject = injector.inject.bind(injector);
+    app.onUnmount(() => {
+        injector.reset();
+    });
 };
 /** 从 Vue 作用域 Injector 中注入 Service 实例 */
 export function useInject(token) {
